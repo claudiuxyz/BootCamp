@@ -153,10 +153,14 @@ namespace AbstractFactory
 
         static void Main(string[] args)
         {
-            Seasons season = Seasons.Autumn;
-            IAbstractFactory factory = getFactory(season);
-            Console.WriteLine("Clothes -> "+factory.MakeClothes().GetName());
-            Console.WriteLine("Shoes -> "+factory.MakeShoes().GetName());
+            foreach (Seasons season in Enum.GetValues(typeof(Seasons)))
+            {
+                Console.WriteLine("\n"+season.ToString());
+                Console.WriteLine(new String('*', season.ToString().Length));
+                IAbstractFactory factory = getFactory(season);
+                Console.WriteLine("Clothes -> " + factory.MakeClothes().GetName());
+                Console.WriteLine("Shoes -> " + factory.MakeShoes().GetName());
+            }
             Console.ReadKey();
         }
     }
