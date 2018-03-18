@@ -73,8 +73,15 @@ namespace ObjectPool
             var c = objectPool.Get();
             c.SendData("Test");
             objectPool.ReleaseResouce(c);
-
+            Random random = new Random();
             Console.ReadKey();
+        }
+
+        static void ThreadActivity(Random random, string message, ObjectPool<ConnectionToPrinter> op)
+        {
+            var mseconds = random.Next(3, 10) * 1000;
+            System.Threading.Thread.Sleep(mseconds);
+            op.Get().SendData(message);
         }
     }
 }
