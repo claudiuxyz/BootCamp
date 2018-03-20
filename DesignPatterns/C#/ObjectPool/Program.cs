@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace ObjectPool
 {
@@ -10,27 +11,9 @@ namespace ObjectPool
 
         public class ConnectionToPrinter
         {
-            public class PrinterDevice
-            {
-                private static PrinterDevice m_instance;
-                public static PrinterDevice Instance()
-                {
-                    if (m_instance == null)
-                    {
-                        m_instance = new PrinterDevice();
-                    }
-                    return m_instance;
-                }
-
-                public void Print(string text)
-                {
-                    Console.WriteLine(text);
-                }
-            }
-
             public void SendData(string text)
             {
-                PrinterDevice.Instance().Print(text);
+                Console.WriteLine(text);
             }
         }
 
@@ -70,6 +53,7 @@ namespace ObjectPool
                 if(items.TryTake(out item))
                 {
                     itemsCount--;
+                    Console.WriteLine("--> reuse connection <---");
                     return item;
                 }
                 else if (items.Count < MAX_ITEMS_COUNT)
@@ -77,10 +61,12 @@ namespace ObjectPool
                     T obj = new T();
                     items.Add(obj);
                     itemsCount++;
+                    Console.WriteLine("--> new connection <--");
                     return obj;
                 }
                 else
                 {
+                    Console.WriteLine("--> no available connection <--");
                     return default(T);
                 }
             }
@@ -91,9 +77,9 @@ namespace ObjectPool
         {
             ObjectPool<ConnectionToPrinter> objectPool = ObjectPool<ConnectionToPrinter>.Instance();
             s_random = new Random();
-            for (int i = 0; i < 10; i++)
+            for (int i = 0; i < 20; i++)
             {
-                Thread thread = new Thread(new ThreadStart(ThreadActivity));
+                var thread = new Thread(new ThreadStart(ThreadActivity));
                 thread.Start();
                 thread.Join();
             }
@@ -102,20 +88,20 @@ namespace ObjectPool
 
         static void ThreadActivity()
         {
-            for (int i = 0; i < 5; i++)
-            {
-                var mseconds = s_random.Next(1, 2) * 100;
-                System.Threading.Thread.Sleep(mseconds);
-                var c = ObjectPool<ConnectionToPrinter>.Instance().Get();
-                while (c == null)
-                {
-                    System.Threading.Thread.Sleep(20);
-                    c = ObjectPool<ConnectionToPrinter>.Instance().Get();
-                }
-                c.SendData(string.Format("thread {0} printed something", Thread.CurrentThread.ManagedThreadId));
-                ObjectPool<ConnectionToPrinter>.Instance().ReleaseResouce(c);
-                Thread.Yield();
-            }
+            Parallel.For(0, 5, action =>
+             {
+                 var c = ObjectPool<ConnectionToPrinter>.Instance().Get();
+                 while (c == null)
+                 {
+                     Thread.Sleep(20);
+                     c = ObjectPool<ConnectionToPrinter>.Instance().Get();
+                 }
+                 c.SendData(string.Format("thread {0} printed something", Thread.CurrentThread.ManagedThreadId));
+                 ObjectPool<ConnectionToPrinter>.Instance().ReleaseResouce(c);
+                 Thread.Yield();
+                 var mseconds = s_random.Next(1, 3) * 1000;
+                 Thread.Sleep(mseconds);
+             });
         }
     }
 }
