@@ -9,6 +9,8 @@ namespace ObjectPool
     {
         static Random s_random;
 
+        private static Mutex mutex = new Mutex();
+
         public class ConnectionToPrinter
         {
             public void SendData(string text)
@@ -19,7 +21,7 @@ namespace ObjectPool
 
         public class ObjectPool<T> where T : new()
         {
-            private readonly int MAX_ITEMS_COUNT = 2;
+            private readonly int MAX_ITEMS_COUNT = 5;
 
             private readonly ConcurrentBag<T> items = new ConcurrentBag<T>();
 
@@ -40,44 +42,40 @@ namespace ObjectPool
 
             public void ReleaseResouce(T item)
             {
-                if(itemsCount<MAX_ITEMS_COUNT)
-                {
-                    items.Add(item);
-                    itemsCount++;
-                }
+                Console.WriteLine($"\n--> resource released <---");
+                items.Add(item);
             }
 
             public T Get()
             {
                 T item;
-                if(items.TryTake(out item))
+                
+                if (items.TryTake(out item))
                 {
-                    itemsCount--;
-                    Console.WriteLine("--> reuse connection <---");
+                    Console.WriteLine("\n--> reuse connection <---");
                     return item;
                 }
-                else if (items.Count < MAX_ITEMS_COUNT)
+                else if (itemsCount < MAX_ITEMS_COUNT)
                 {
                     T obj = new T();
-                    items.Add(obj);
                     itemsCount++;
-                    Console.WriteLine("--> new connection <--");
+                    Console.WriteLine("\n--> new connection <--");
                     return obj;
                 }
                 else
                 {
-                    Console.WriteLine("--> no available connection <--");
+                    Console.Write(".");
                     return default(T);
                 }
+
             }
 
         }
 
         static void Main(string[] args)
         {
-            ObjectPool<ConnectionToPrinter> objectPool = ObjectPool<ConnectionToPrinter>.Instance();
             s_random = new Random();
-            for (int i = 0; i < 20; i++)
+            for (int i = 0; i < 10; i++)
             {
                 var thread = new Thread(new ThreadStart(ThreadActivity));
                 thread.Start();
@@ -90,17 +88,23 @@ namespace ObjectPool
         {
             Parallel.For(0, 5, action =>
              {
+                 mutex.WaitOne();
                  var c = ObjectPool<ConnectionToPrinter>.Instance().Get();
+                 mutex.ReleaseMutex();
                  while (c == null)
                  {
-                     Thread.Sleep(20);
+                     Thread.Sleep(100);
+                     mutex.WaitOne();
                      c = ObjectPool<ConnectionToPrinter>.Instance().Get();
+                     mutex.ReleaseMutex();
                  }
-                 c.SendData(string.Format("thread {0} printed something", Thread.CurrentThread.ManagedThreadId));
-                 ObjectPool<ConnectionToPrinter>.Instance().ReleaseResouce(c);
-                 Thread.Yield();
+                 c.SendData(string.Format("\nthread {0} printed something", Thread.CurrentThread.ManagedThreadId));
                  var mseconds = s_random.Next(1, 3) * 1000;
                  Thread.Sleep(mseconds);
+                 Thread.Yield();
+                 mutex.WaitOne();
+                 ObjectPool<ConnectionToPrinter>.Instance().ReleaseResouce(c);
+                 mutex.ReleaseMutex();
              });
         }
     }
