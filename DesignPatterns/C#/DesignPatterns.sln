@@ -31,6 +31,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PrivateClassData", "Private
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Proxy", "Proxy\Proxy.csproj", "{1AEEDFCB-EF8D-42BB-9FBB-08ACA3B48523}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChainOfResponsibility", "ChainOfResponsibility\ChainOfResponsibility.csproj", "{4A77D94B-283A-48FF-8466-AC23D8EA5C39}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -93,6 +95,10 @@ Global
 		{1AEEDFCB-EF8D-42BB-9FBB-08ACA3B48523}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1AEEDFCB-EF8D-42BB-9FBB-08ACA3B48523}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1AEEDFCB-EF8D-42BB-9FBB-08ACA3B48523}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4A77D94B-283A-48FF-8466-AC23D8EA5C39}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4A77D94B-283A-48FF-8466-AC23D8EA5C39}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4A77D94B-283A-48FF-8466-AC23D8EA5C39}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4A77D94B-283A-48FF-8466-AC23D8EA5C39}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
