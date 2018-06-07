@@ -29,6 +29,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Flyweight", "Flyweight\Flyw
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PrivateClassData", "PrivateClassData\PrivateClassData.csproj", "{3F91730F-FA6A-40B1-8B30-3E4A3CFF9A3D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Iterator", "Iterator\Iterator.csproj", "{AD86A3B6-6665-4FF2-A8A0-E1184452C51B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -87,6 +89,10 @@ Global
 		{3F91730F-FA6A-40B1-8B30-3E4A3CFF9A3D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3F91730F-FA6A-40B1-8B30-3E4A3CFF9A3D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3F91730F-FA6A-40B1-8B30-3E4A3CFF9A3D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AD86A3B6-6665-4FF2-A8A0-E1184452C51B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AD86A3B6-6665-4FF2-A8A0-E1184452C51B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AD86A3B6-6665-4FF2-A8A0-E1184452C51B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AD86A3B6-6665-4FF2-A8A0-E1184452C51B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
