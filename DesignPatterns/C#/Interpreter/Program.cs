@@ -109,12 +109,21 @@ namespace Interpreter
 
     }
 
-    class Program
+    public class Calculator // Context
     {
-        static void Main(string[] args)
+        protected string m_arithmeticExpression;
+
+        public virtual void SetArithmeticExpression(string expression) { m_arithmeticExpression = expression; }
+
+        public string GetArithmeticExpression() { return m_arithmeticExpression; }
+
+        public int Compute()
         {
-            string textToInterpret = "7 3 -";
-            var tokens = textToInterpret.Split(' ');
+            if (m_arithmeticExpression.Length == 0)
+            {
+                return 0;
+            }
+            var tokens = m_arithmeticExpression.Split(' ');
             Stack<Expression> stack = new Stack<Expression>();
             foreach (var c in tokens)
             {
@@ -131,7 +140,17 @@ namespace Interpreter
                     stack.Push(new Number(Int32.Parse(c)));
                 }
             }
-            Console.WriteLine($"{textToInterpret} = {stack.Pop().Interpret()}");
+            return stack.Pop().Interpret();
+        }
+    }
+
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            var calculator = new Calculator();
+            calculator.SetArithmeticExpression("7 3 -");
+            Console.WriteLine($"{calculator.GetArithmeticExpression()} = {calculator.Compute()}");
             Console.ReadKey();
         }
     }
